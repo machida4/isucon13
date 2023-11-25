@@ -16,6 +16,7 @@ restart-3: ## Restart for Server 3
 	@make -s restart
 
 app-restart: ## Restart Server
+	@cd go; go build -o isupipe
 	@sudo systemctl daemon-reload
 	@sudo systemctl restart isupipe-go.service
 	@echo 'Restart App Server'
