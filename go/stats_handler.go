@@ -145,7 +145,7 @@ func getUserStatisticsHandler(c echo.Context) error {
 	var viewersCount int64
 	for _, livestream := range livestreams {
 		var cnt int64
-		if err := tx.GetContext(ctx, &cnt, "SELECT COUNT(*) FROM livestream_viewers_history WHERE livestream_id = ?", livestream.ID); err != nil && !errors.Is(err, sql.ErrNoRows) {
+		if err := tx.SelectContext(ctx, &cnt, "SELECT COUNT(*) FROM livestream_viewers_history WHERE livestream_id = ?", livestream.ID); err != nil && !errors.Is(err, sql.ErrNoRows) {
 			return echo.NewHTTPError(http.StatusInternalServerError, "failed to get livestream_view_history: "+err.Error())
 		}
 		viewersCount += cnt
