@@ -50,6 +50,7 @@ db-restart: ## Restart mysql
 	@sudo cp go/mysql.cnf /etc/mysql/
 	@sudo systemctl restart mysql
 	@echo 'Restart mysql'
+	@sudo mysql -e "DROP DATABASE isupipe"
 	@sudo cat sql/initdb.d/00_create_database.sql | sudo mysql
 	@sudo cat sql/initdb.d/10_schema.sql | sudo mysql isupipe
 	@echo 'Drop database'
