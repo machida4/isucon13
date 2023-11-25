@@ -429,7 +429,7 @@ func fillUserResponse(ctx context.Context, tx *sqlx.Tx, userModel UserModel) (Us
 		}
 		_, err := tx.ExecContext(ctx, "UPDATE users SET icon_hash=? WHERE id=?", icon_hash, userModel.ID)
 		if err != nil {
-			return echo.NewHTTPError(http.StatusInternalServerError, "failed to update icon hash: "+err.Error())
+			return User{}, echo.NewHTTPError(http.StatusInternalServerError, "failed to update icon hash: "+err.Error())
 		}
 	}
 
