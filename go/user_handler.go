@@ -415,7 +415,7 @@ func fillUserResponse(ctx context.Context, tx *sqlx.Tx, userModel UserModel) (Us
 		return User{}, err
 	}
 
-	icon_hash = userModel.IconHash
+	icon_hash := userModel.IconHash
 
 	if icon_hash == "" {
 		var image []byte
