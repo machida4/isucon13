@@ -17,7 +17,6 @@ restart-3: ## Restart for Server 3
 
 app-restart: ## Restart Server
 	@sudo systemctl daemon-reload
-	@bundle 1> /dev/null
 	@sudo systemctl restart isupipe-go.service
 	@echo 'Restart App Server'
 
