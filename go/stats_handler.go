@@ -95,7 +95,7 @@ func getUserStatisticsHandler(c echo.Context) error {
 		INNER JOIN livecomments l2 ON l2.livestream_id = l.id
 		GROUP BY u.id
 		`
-	err = tx.GetContext(ctx, &ranking, query)
+	err = tx.SelectContext(ctx, &ranking, query)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to get score: "+err.Error())
 	}
