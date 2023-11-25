@@ -48,7 +48,7 @@ nginx-alp-url: ## Run alp with url sort
 	@dispost -f alp.txt
 
 sysctl-udpate: ## Update sysctl.conf
-	@sudo cp go/sysctl.conf /etc/sysctl/
+	@sudo cp go/sysctl.conf /etc/
 	@sudo sysctl -p
 
 db-restart: ## Restart mysql
