@@ -3,6 +3,7 @@
 restart: ## Restart all
 	@git pull
 	@make -s sysctl-udpate
+	@make -s powerdns-udpate
 	@make -s nginx-restart
 	@make -s db-restart
 	@make -s app-restart
@@ -50,6 +51,10 @@ nginx-alp-url: ## Run alp with url sort
 sysctl-udpate: ## Update sysctl.conf
 	@sudo cp go/sysctl.conf /etc/
 	@sudo sysctl -p
+
+powerdns-udpate: ## Update powerdns.conf
+	@sudo cp go/pdns.conf /etc/powerdns/
+	@sudo systemctl restart pdns
 
 db-restart: ## Restart mysql
 	@sudo cp /dev/null /var/log/mysql/mysql-slow.log
