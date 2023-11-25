@@ -432,8 +432,7 @@ func fillUserResponse(ctx context.Context, tx *sqlx.Tx, userModel UserModel) (Us
 				fallbackImageHash = fmt.Sprintf("%x", sha256.Sum256(image))
 			}
 			icon_hash = fallbackImageHash
-		}
-		else {
+		} else {
 			icon_hash = fmt.Sprintf("%x", sha256.Sum256(image))
 		}
 	}
