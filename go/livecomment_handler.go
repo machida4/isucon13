@@ -424,7 +424,7 @@ func moderateHandler(c echo.Context) error {
 
 func fillLivecommentResponse(ctx context.Context, tx *sqlx.Tx, livecommentModel LivecommentModel) (Livecomment, error) {
 	commentOwnerModel := UserModel{}
-	if err := tx.GetContext(ctx, &commentOwnerModel, "SELECT * FROM users WHERE id = ?", livecommentModel.UserID); err != nil {
+	if err := tx.GetContext(ctx, &commentOwnerModel, "SELECT * FROM users WHERE id = ? LIMIT 1", livecommentModel.UserID); err != nil {
 		return Livecomment{}, err
 	}
 	commentOwner, err := fillUserResponse(ctx, tx, commentOwnerModel)
@@ -433,7 +433,7 @@ func fillLivecommentResponse(ctx context.Context, tx *sqlx.Tx, livecommentModel 
 	}
 
 	livestreamModel := LivestreamModel{}
-	if err := tx.GetContext(ctx, &livestreamModel, "SELECT * FROM livestreams WHERE id = ?", livecommentModel.LivestreamID); err != nil {
+	if err := tx.GetContext(ctx, &livestreamModel, "SELECT * FROM livestreams WHERE id = ? LIMIT 1", livecommentModel.LivestreamID); err != nil {
 		return Livecomment{}, err
 	}
 	livestream, err := fillLivestreamResponse(ctx, tx, livestreamModel)
@@ -455,7 +455,7 @@ func fillLivecommentResponse(ctx context.Context, tx *sqlx.Tx, livecommentModel 
 
 func fillLivecommentReportResponse(ctx context.Context, tx *sqlx.Tx, reportModel LivecommentReportModel) (LivecommentReport, error) {
 	reporterModel := UserModel{}
-	if err := tx.GetContext(ctx, &reporterModel, "SELECT * FROM users WHERE id = ?", reportModel.UserID); err != nil {
+	if err := tx.GetContext(ctx, &reporterModel, "SELECT * FROM users WHERE id = ? LIMIT 1", reportModel.UserID); err != nil {
 		return LivecommentReport{}, err
 	}
 	reporter, err := fillUserResponse(ctx, tx, reporterModel)
@@ -464,7 +464,7 @@ func fillLivecommentReportResponse(ctx context.Context, tx *sqlx.Tx, reportModel
 	}
 
 	livecommentModel := LivecommentModel{}
-	if err := tx.GetContext(ctx, &livecommentModel, "SELECT * FROM livecomments WHERE id = ?", reportModel.LivecommentID); err != nil {
+	if err := tx.GetContext(ctx, &livecommentModel, "SELECT * FROM livecomments WHERE id = ? LIMIT 1", reportModel.LivecommentID); err != nil {
 		return LivecommentReport{}, err
 	}
 	livecomment, err := fillLivecommentResponse(ctx, tx, livecommentModel)
