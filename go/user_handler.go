@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"os"
 	"os/exec"
 	"time"
 
@@ -423,13 +422,6 @@ func fillUserResponse(ctx context.Context, tx *sqlx.Tx, userModel UserModel) (Us
 		if err := tx.GetContext(ctx, &image, "SELECT image FROM icons WHERE user_id = ? LIMIT 1", userModel.ID); err != nil {
 			if !errors.Is(err, sql.ErrNoRows) {
 				return User{}, err
-			}
-			if fallbackImageHash == "" {
-				image, err = os.ReadFile(fallbackImage)
-				if err != nil {
-					return User{}, err
-				}
-				fallbackImageHash = fmt.Sprintf("%x", sha256.Sum256(image))
 			}
 			icon_hash = fallbackImageHash
 		} else {
