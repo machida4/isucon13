@@ -427,7 +427,7 @@ func fillUserResponse(ctx context.Context, tx *sqlx.Tx, userModel UserModel) (Us
 		} else {
 			icon_hash = fmt.Sprintf("%x", sha256.Sum256(image))
 		}
-		_, err = tx.ExecContext(ctx, "UPDATE users SET icon_hash=? WHERE id=?", icon_hash, userModel.ID)
+		_, err := tx.ExecContext(ctx, "UPDATE users SET icon_hash=? WHERE id=?", icon_hash, userModel.ID)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, "failed to update icon hash: "+err.Error())
 		}
