@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -382,26 +381,19 @@ func moderateHandler(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to get last inserted NG word id: "+err.Error())
 	}
 
-	var ngwords []*NGWord
-	if err := tx.SelectContext(ctx, &ngwords, "SELECT * FROM ng_words WHERE livestream_id = ?", livestreamID); err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, "failed to get NG words: "+err.Error())
-	}
-
-	// NGワードにヒットする過去の投稿も全削除する
-	var ngwordStrings []string
-	for _, ngword := range ngwords {
-		ngwordStrings = append(ngwordStrings, ".*"+ngword.Word+".*")
-	}
-	var pattern = strings.Join(ngwordStrings, "|")
+	// var ngwords []*NGWord
+	// if err := tx.SelectContext(ctx, &ngwords, "SELECT * FROM ng_words WHERE livestream_id = ?", livestreamID); err != nil {
+	// 	return echo.NewHTTPError(http.StatusInternalServerError, "failed to get NG words: "+err.Error())
+	// }
 
 	query := `
 	DELETE FROM livecomments
 	WHERE
 	livestream_id = ? AND
-	comment REGEXP '?';
+	comment LIKE CONCAT('%', ?, '%');
 	`
 
-	if _, err := tx.ExecContext(ctx, query, livestreamID, pattern); err != nil {
+	if _, err := tx.ExecContext(ctx, query, livestreamID, req.NGWord); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to delete old livecomments that hit spams: "+err.Error())
 	}
 
