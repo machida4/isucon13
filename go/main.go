@@ -22,8 +22,7 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	echolog "github.com/labstack/gommon/log"
-
-	_ "net/http/pprof"
+	// _ "net/http/pprof"
 )
 
 const (
