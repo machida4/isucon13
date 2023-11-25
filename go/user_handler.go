@@ -415,15 +415,20 @@ func fillUserResponse(ctx context.Context, tx *sqlx.Tx, userModel UserModel) (Us
 		return User{}, err
 	}
 
-	var image []byte
-	if err := tx.GetContext(ctx, &image, "SELECT image FROM icons WHERE user_id = ?", userModel.ID); err != nil {
-		if !errors.Is(err, sql.ErrNoRows) {
-			return User{}, err
+	icon_hash = userModel.IconHash
+
+	if icon_hash == "" {
+		var image []byte
+		if err := tx.GetContext(ctx, &image, "SELECT image FROM icons WHERE user_id = ?", userModel.ID); err != nil {
+			if !errors.Is(err, sql.ErrNoRows) {
+				return User{}, err
+			}
+			image, err = os.ReadFile(fallbackImage)
+			if err != nil {
+				return User{}, err
+			}
 		}
-		image, err = os.ReadFile(fallbackImage)
-		if err != nil {
-			return User{}, err
-		}
+		icon_hash = fmt.Sprintf("%x", sha256.Sum256(image))
 	}
 
 	user := User{
@@ -435,7 +440,7 @@ func fillUserResponse(ctx context.Context, tx *sqlx.Tx, userModel UserModel) (Us
 			ID:       themeModel.ID,
 			DarkMode: themeModel.DarkMode,
 		},
-		IconHash: userModel.IconHash,
+		IconHash: icon_hash,
 	}
 
 	return user, nil
