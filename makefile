@@ -26,7 +26,7 @@ app-log: ## Tail server log
 
 nginx-restart: ## Restart nginx
 	@sudo cp /dev/null /var/log/nginx/access.log
-	@sudo cp /go/nginx.conf /etc/nginx/
+	@sudo cp go/nginx.conf /etc/nginx/
 	@echo 'Validate nginx.conf'
 	@sudo nginx -t
 	@sudo systemctl restart nginx
@@ -44,7 +44,7 @@ nginx-alp: ## Run alp
 
 db-restart: ## Restart mysql
 	@sudo cp /dev/null /var/log/mysql/mysql-slow.log
-	@sudo cp /go/mysql.cnf /etc/mysql/
+	@sudo cp go/mysql.cnf /etc/mysql/
 	@sudo systemctl restart mysql
 	@echo 'Restart mysql'
 
