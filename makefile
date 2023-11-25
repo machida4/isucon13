@@ -38,7 +38,7 @@ nginx-error-log: ## Tail nginx error.log
 	@sudo tail -f /var/log/nginx/error.log
 
 nginx-alp: ## Run alp
-	@sudo alp ltsv --file /var/log/nginx/access.log --sort sum --reverse --matching-groups '/api/user/[a-zA-Z0-9]+/icon /api/user/[a-zA-Z0-9]+/statistics /api/livestream/[0-9]+/statistics /api/livestream/[0-9]+/icon /api/livestream/[0-9]+/reaction /api/livestream/[0-9]+/ngwords /api/livestream/[0-9]+/report /api/livestream/[0-9]+/moderate'> alp.txt
+	@sudo alp ltsv --file /var/log/nginx/access.log --sort sum --reverse --matching-groups '/api/user/[a-zA-Z0-9]+/icon, /api/user/[a-zA-Z0-9]+/statistics, /api/livestream/[0-9]+/statistics, /api/livestream/[0-9]+/icon, /api/livestream/[0-9]+/reaction, /api/livestream/[0-9]+/ngwords, /api/livestream/[0-9]+/report, /api/livestream/[0-9]+/moderate'> alp.txt
 	@dispost -f alp.txt
 
 db-restart: ## Restart mysql
