@@ -12,8 +12,8 @@ CREATE TABLE `users` (
 
 -- プロフィール画像
 CREATE TABLE `icons` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `user_id` BIGINT NOT NULL,
+  `id` BIGINT NOT NULL DEFAULT 0,
+  `user_id` BIGINT NOT NULL PRIMARY KEY,
   `image` LONGBLOB NOT NULL
 ) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
 
@@ -53,8 +53,8 @@ CREATE TABLE `tags` (
 
 -- ライブ配信とタグの中間テーブル
 CREATE TABLE `livestream_tags` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `livestream_id` BIGINT NOT NULL,
+  `id` BIGINT NOT NULL DEFAULT 0,
+  `livestream_id` BIGINT NOT NULL PRIMARY KEY,
   `tag_id` BIGINT NOT NULL
 ) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
 
