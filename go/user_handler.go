@@ -155,7 +155,7 @@ func postIconHandler(c echo.Context) error {
 	}
 
 	iconHash := fmt.Sprintf("%x", sha256.Sum256(req.Image))
-	_, err := tx.ExecContext(ctx, "UPDATE users SET icon_hash=? WHERE id=?", iconHash, userID)
+	_, err = tx.ExecContext(ctx, "UPDATE users SET icon_hash=? WHERE id=?", iconHash, userID)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to update icon hash: "+err.Error())
 	}
