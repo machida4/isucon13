@@ -401,7 +401,7 @@ func moderateHandler(c echo.Context) error {
 	comment REGEXP '?';
 	`
 
-	if _, err := tx.ExecContext(ctx, query, livestreamID, livestreamID, pattern); err != nil {
+	if _, err := tx.ExecContext(ctx, query, livestreamID, pattern); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to delete old livecomments that hit spams: "+err.Error())
 	}
 
