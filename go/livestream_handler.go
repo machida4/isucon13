@@ -503,7 +503,7 @@ func fillLivestreamResponse(ctx context.Context, tx *sqlx.Tx, livestreamModel Li
 	query := `
 	SELECT * FROM tags
 	LEFT JOIN livestream_tags ON tags.id = livestream_tags.tag_id
-	WHERE livestream_tags.id = ?;
+	WHERE livestream_tags.id = ?
 	`
 	if err := tx.SelectContext(ctx, &tagModels, query, livestreamModel.ID); err != nil {
 		return Livestream{}, err
