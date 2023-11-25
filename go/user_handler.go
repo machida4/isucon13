@@ -29,6 +29,7 @@ const (
 )
 
 var fallbackImage = "../img/NoImage.jpg"
+var fallbackImageHash = ""
 
 type UserModel struct {
 	ID             int64  `db:"id"`
@@ -423,12 +424,18 @@ func fillUserResponse(ctx context.Context, tx *sqlx.Tx, userModel UserModel) (Us
 			if !errors.Is(err, sql.ErrNoRows) {
 				return User{}, err
 			}
-			image, err = os.ReadFile(fallbackImage)
-			if err != nil {
-				return User{}, err
+			if fallbackImageHash == "" {
+				image, err = os.ReadFile(fallbackImage)
+				if err != nil {
+					return User{}, err
+				}
+				fallbackImageHash = fmt.Sprintf("%x", sha256.Sum256(image))
 			}
+			icon_hash = fallbackImageHash
 		}
-		icon_hash = fmt.Sprintf("%x", sha256.Sum256(image))
+		else {
+			icon_hash = fmt.Sprintf("%x", sha256.Sum256(image))
+		}
 	}
 
 	user := User{
