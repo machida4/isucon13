@@ -87,6 +87,11 @@ func getUserStatisticsHandler(c echo.Context) error {
 	}
 
 	// ランク算出
+	var users []*UserModel
+	if err := tx.SelectContext(ctx, &users, "SELECT * FROM users"); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to get users: "+err.Error())
+	}
+
 	var reactions UserRanking
 	query := `
 		SELECT u.name, COUNT(*) AS score FROM users u
@@ -113,8 +118,11 @@ func getUserStatisticsHandler(c echo.Context) error {
 
 	var ranking UserRanking
 	var rankMap map[string]int64 = map[string]int64{}
+	for _, v := range users {
+		rankMap[v.Name] = 0
+	}
 	for _, v := range reactions {
-		rankMap[v.Username] = v.Score
+		rankMap[v.Username] += v.Score
 	}
 	for _, v := range tips {
 		rankMap[v.Username] += v.Score
