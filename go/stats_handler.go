@@ -87,17 +87,43 @@ func getUserStatisticsHandler(c echo.Context) error {
 	}
 
 	// ランク算出
-	var ranking UserRanking
+	var reactions UserRanking
 	query := `
-		SELECT u.name, COUNT(*) + IFNULL(SUM(l2.tip), 0) AS score FROM users u
+		SELECT u.name, COUNT(*) AS score FROM users u
 		INNER JOIN livestreams l ON l.user_id = u.id
 		INNER JOIN reactions r ON r.livestream_id = l.id
-		INNER JOIN livecomments l2 ON l2.livestream_id = l.id
 		GROUP BY u.id
 		`
-	err = tx.SelectContext(ctx, &ranking, query)
+	err = tx.SelectContext(ctx, &reactions, query)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, "failed to get score: "+err.Error())
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to get reactions: "+err.Error())
+	}
+
+	var tips UserRanking
+	query = `
+	SELECT u.name, IFNULL(SUM(l2.tip), 0) AS score FROM users u
+		INNER JOIN livestreams l ON l.user_id = u.id	
+		INNER JOIN livecomments l2 ON l2.livestream_id = l.id
+		GROUP BY u.id
+	`
+	err = tx.SelectContext(ctx, &tips, query)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to get tips: "+err.Error())
+	}
+
+	var ranking UserRanking
+	var rankMap map[string]int64 = map[string]int64{}
+	for _, v := range reactions {
+		rankMap[v.Username] = v.Score
+	}
+	for _, v := range tips {
+		rankMap[v.Username] += v.Score
+	}
+	for k, v := range rankMap {
+		ranking = append(ranking, UserRankingEntry{
+			Username: k,
+			Score:    v,
+		})
 	}
 	sort.Sort(ranking)
 
