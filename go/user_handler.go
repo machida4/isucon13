@@ -36,6 +36,7 @@ type UserModel struct {
 	DisplayName    string `db:"display_name"`
 	Description    string `db:"description"`
 	HashedPassword string `db:"password"`
+	IconHash       string `db:"icon_hash"`
 }
 
 type User struct {
@@ -104,7 +105,7 @@ func getIconHandler(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to get user: "+err.Error())
 	}
 
-	if user.icon_hash == c.Request().Header.Get("If-None-Match") {
+	if user.IconHash == c.Request().Header.Get("If-None-Match") {
 		return c.NoContent(http.StatusNotModified)
 	}
 
@@ -151,6 +152,12 @@ func postIconHandler(c echo.Context) error {
 	rs, err := tx.ExecContext(ctx, "INSERT INTO icons (user_id, image) VALUES (?, ?)", userID, req.Image)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to insert new user icon: "+err.Error())
+	}
+
+	iconHash := fmt.Sprintf("%x", sha256.Sum256(req.Image))
+	us, err := tx.ExecContext(ctx, "UPDATE users SET icon_hash=? WHERE id=?", iconHash, userID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to update icon hash: "+err.Error())
 	}
 
 	iconID, err := rs.LastInsertId()
@@ -418,7 +425,6 @@ func fillUserResponse(ctx context.Context, tx *sqlx.Tx, userModel UserModel) (Us
 			return User{}, err
 		}
 	}
-	iconHash := sha256.Sum256(image)
 
 	user := User{
 		ID:          userModel.ID,
@@ -429,7 +435,7 @@ func fillUserResponse(ctx context.Context, tx *sqlx.Tx, userModel UserModel) (Us
 			ID:       themeModel.ID,
 			DarkMode: themeModel.DarkMode,
 		},
-		IconHash: fmt.Sprintf("%x", iconHash),
+		IconHash: userModel.IconHash,
 	}
 
 	return user, nil
