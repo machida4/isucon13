@@ -89,11 +89,11 @@ func getUserStatisticsHandler(c echo.Context) error {
 	// ランク算出
 	var ranking UserRanking
 	query := `
-		SELECT u.id, COUNT(*) + IFNULL(SUM(l2.tip), 0) AS score FROM users u
+		SELECT u.name, COUNT(*) + IFNULL(SUM(l2.tip), 0) AS score FROM users u
 		INNER JOIN livestreams l ON l.user_id = u.id
 		INNER JOIN reactions r ON r.livestream_id = l.id
 		INNER JOIN livecomments l2 ON l2.livestream_id = l.id
-		GROUP BY u.id;
+		GROUP BY u.id
 		`
 	err = tx.GetContext(ctx, &ranking, query)
 	if err != nil {
