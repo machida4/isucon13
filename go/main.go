@@ -4,6 +4,7 @@ package main
 // sqlx的な参考: https://jmoiron.github.io/sqlx/
 
 import (
+	"crypto/sha256"
 	"fmt"
 	"log"
 	"net"
@@ -41,6 +42,11 @@ func init() {
 	if secretKey, ok := os.LookupEnv("ISUCON13_SESSION_SECRETKEY"); ok {
 		secret = []byte(secretKey)
 	}
+	image, err := os.ReadFile(fallbackImage)
+	if err != nil {
+		panic(err)
+	}
+	fallbackImageHash = fmt.Sprintf("%x", sha256.Sum256(image))
 }
 
 type InitializeResponse struct {
