@@ -2,6 +2,7 @@
 
 restart: ## Restart all
 	@git pull
+	@make -s sysctl-udpate
 	@make -s nginx-restart
 	@make -s db-restart
 	@make -s app-restart
@@ -46,7 +47,7 @@ nginx-alp-url: ## Run alp with url sort
 	@sudo alp ltsv --file /var/log/nginx/access.log --sort uri --reverse --matching-groups '/api/user/[a-zA-Z0-9]+/theme, /api/user/[a-zA-Z0-9]+/icon, /api/user/[a-zA-Z0-9]+/statistics, /api/livestream/[0-9]+/statistics, /api/livestream/[0-9]+/icon, /api/livestream/[0-9]+/reaction, /api/livestream/[0-9]+/ngwords, /api/livestream/[0-9]+/report, /api/livestream/[0-9]+/moderate, /api/livestream/[0-9]+/livecomment, /api/livestream/[0-9]+/livecomment/[0-9]+/report, /api/livestream/[0-9]+/enter, /api/livestream/[0-9]+/exit'> alp.txt
 	@dispost -f alp.txt
 
-sysctl-udpate: ## update sysctl.conf
+sysctl-udpate: ## Update sysctl.conf
 	@sudo cp go/sysctl.conf /etc/sysctl/
 	@sudo sysctl -p
 
