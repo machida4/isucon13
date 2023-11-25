@@ -390,7 +390,7 @@ func moderateHandler(c echo.Context) error {
 	// NGワードにヒットする過去の投稿も全削除する
 	var ngwordStrings []string
 	for _, ngword := range ngwords {
-		ngwordStrings = append(ngwordStrings, "(.*"+ngword.Word+".*)")
+		ngwordStrings = append(ngwordStrings, ".*"+ngword.Word+".*")
 	}
 	var pattern = strings.Join(ngwordStrings, "|")
 
